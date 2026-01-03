@@ -55,6 +55,7 @@ public class FastScrollerBuilder {
 
     @Nullable
     private FastScroller.AnimationHelper mAnimationHelper;
+    private int mScrollBarWidthDp;
 
     public FastScrollerBuilder(@NonNull ViewGroup view) {
         mView = view;
@@ -113,6 +114,11 @@ public class FastScrollerBuilder {
         return this;
     }
 
+    public FastScrollerBuilder setScrollBarWidth(int dp) {
+        this.mScrollBarWidthDp = dp;
+        return this;
+    }
+
     @NonNull
     public FastScrollerBuilder useDefaultStyle() {
         Context context = mView.getContext();
@@ -148,7 +154,7 @@ public class FastScrollerBuilder {
     @NonNull
     public FastScroller build() {
         return new FastScroller(mView, getOrCreateViewHelper(), mPadding, mTrackDrawable,
-                mThumbDrawable, mPopupStyle, getOrCreateAnimationHelper());
+                mThumbDrawable, mPopupStyle, getOrCreateAnimationHelper(), mScrollBarWidthDp);
     }
 
     @NonNull

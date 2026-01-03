@@ -21,6 +21,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -84,7 +85,7 @@ public class FastScroller {
     public FastScroller(@NonNull ViewGroup view, @NonNull ViewHelper viewHelper,
                         @Nullable Rect padding, @NonNull Drawable trackDrawable,
                         @NonNull Drawable thumbDrawable, @NonNull Consumer<TextView> popupStyle,
-                        @NonNull AnimationHelper animationHelper) {
+                        @NonNull AnimationHelper animationHelper, int scrollBarWidthDp) {
 
         mMinTouchTargetSize = view.getResources().getDimensionPixelSize(
                 R.dimen.afs_min_touch_target_size);
@@ -96,9 +97,13 @@ public class FastScroller {
         mUserPadding = padding;
         mAnimationHelper = animationHelper;
 
-        mTrackWidth = requireNonNegative(trackDrawable.getIntrinsicWidth(),
+        float scrollBarWidth = 0;
+        if (scrollBarWidthDp > 0) {
+            scrollBarWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, scrollBarWidthDp, view.getResources().getDisplayMetrics());
+        }
+        mTrackWidth = scrollBarWidth > 0 ? (int) scrollBarWidth : requireNonNegative(trackDrawable.getIntrinsicWidth(),
                 "trackDrawable.getIntrinsicWidth() < 0");
-        mThumbWidth = requireNonNegative(thumbDrawable.getIntrinsicWidth(),
+        mThumbWidth = scrollBarWidth > 0 ? (int) scrollBarWidth : requireNonNegative(thumbDrawable.getIntrinsicWidth(),
                 "thumbDrawable.getIntrinsicWidth() < 0");
         mThumbHeight = requireNonNegative(thumbDrawable.getIntrinsicHeight(),
                 "thumbDrawable.getIntrinsicHeight() < 0");
