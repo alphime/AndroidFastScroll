@@ -19,6 +19,7 @@ package me.zhanghai.android.fastscroll;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -77,6 +78,8 @@ public class FastScroller {
 
     @NonNull
     private final Rect mTempRect = new Rect();
+    private final Handler mHandle = new Handler();
+    private DragListener dragListener;
 
     public FastScroller(@NonNull ViewGroup view, @NonNull ViewHelper viewHelper,
                         @Nullable Rect padding, @NonNull Drawable trackDrawable,
@@ -407,6 +410,16 @@ public class FastScroller {
             postAutoHideScrollbar();
             mAnimationHelper.hidePopup(mPopupView);
         }
+        mHandle.post(() -> {
+            if (dragListener != null) {
+                dragListener.onDrawStateChanged(mDragging);
+            }
+        });
+    }
+
+    public FastScroller setDragListener(DragListener dragListener) {
+        this.dragListener = dragListener;
+        return this;
     }
 
     private void postAutoHideScrollbar() {
@@ -461,5 +474,9 @@ public class FastScroller {
         void showPopup(@NonNull View popupView);
 
         void hidePopup(@NonNull View popupView);
+    }
+
+    public interface DragListener {
+        void onDrawStateChanged(boolean isDragging);
     }
 }
